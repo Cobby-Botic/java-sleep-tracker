@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class LogsLoader {
 
     public List<SleepingSession> downloadSession(String pathFile) throws IOException {
-        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
         List<SleepingSession> sessions;
         try (Stream<String> lines = Files.lines(Paths.get(pathFile))) {
             sessions = lines
@@ -25,7 +25,7 @@ public class LogsLoader {
                     .toList();
             return sessions;
         } catch (IOException e) {
-            throw new RuntimeException("Файл не найден");
+            throw new IOException("Файл не найден");
         }
     }
 }
