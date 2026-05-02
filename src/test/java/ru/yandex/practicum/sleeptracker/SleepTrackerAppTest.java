@@ -1,15 +1,13 @@
 package ru.yandex.practicum.sleeptracker;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SleepTrackerAppTest {
 
@@ -32,5 +30,88 @@ public class SleepTrackerAppTest {
         SleepingSession sleep3 = new SleepingSession(date1, date2, SleepStatus.GOOD);
         List<SleepingSession> sleepingSessions = List.of(sleep1, sleep2, sleep3);
         assertEquals((int)countSessionSleeps.analyze(sleepingSessions).getResult(), 3);
+    }
+
+    @Test
+    public void shouldRreturnMinSession() {
+        MinDuration minDuration = new MinDuration();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.01.26 23:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:00", formatDate);
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 23:00", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 03:00", formatDate);
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 23:00", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 05:00", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+        List<SleepingSession> list1 = new ArrayList<>();
+
+        assertEquals("0ч 0м", minDuration.analyze(list1).getResult());
+        assertEquals("4ч 0м", minDuration.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldReturnMaxSession() {
+        MaxDuration maxDuration = new MaxDuration();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.01.26 23:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.01.26 06:00", formatDate);
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 23:00", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 03:00", formatDate);
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 23:00", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 05:00", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+        List<SleepingSession> list1 = new ArrayList<>();
+        assertEquals("0ч 0м", maxDuration.analyze(list1).getResult());
+        assertEquals("7ч 0м", maxDuration.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldReturnAverageSession() {
+        AverageDuration averageDuration = new AverageDuration();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 23:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:00", formatDate);
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 23:00", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 03:00", formatDate);
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 23:00", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 05:00", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+        List<SleepingSession> list1 = new ArrayList<>();
+
+        assertEquals("0ч 0м", averageDuration.analyze(list1).getResult());
+        assertEquals("5ч 40м", averageDuration.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldReturnOnlyBad() {
+        CountBadStatusSessions countBadStatusSessions = new CountBadStatusSessions();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 23:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:00", formatDate);
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 23:00", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 03:00", formatDate);
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 23:00", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 05:00", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+
+        SleepingSession sleep4 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep5 = new SleepingSession(date3, date4, SleepStatus.BAD);
+        SleepingSession sleep6 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+        List<SleepingSession> list1 = List.of(sleep4, sleep5, sleep6);
+
+        assertEquals(0, countBadStatusSessions.analyze(list).getResult());
+        assertEquals(1, countBadStatusSessions.analyze(list1).getResult());
     }
 }
