@@ -1,5 +1,6 @@
 package ru.yandex.practicum.sleeptracker;
 
+import Function.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -113,5 +114,31 @@ public class SleepTrackerAppTest {
 
         assertEquals(0, countBadStatusSessions.analyze(list).getResult());
         assertEquals(1, countBadStatusSessions.analyze(list1).getResult());
+    }
+
+    @Test
+    public void shouldReturnSleeplessNights() {
+        SleeplessNights sleeplessNights = new SleeplessNights();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 23:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:00", formatDate);
+
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 23:00", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 03:00", formatDate);
+
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 23:00", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 05:00", formatDate);
+
+        LocalDateTime date7 = LocalDateTime.parse("04.02.26 11:00", formatDate);
+        LocalDateTime date8 = LocalDateTime.parse("04.02.26 17:00", formatDate);
+
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+        SleepingSession sleep4 = new SleepingSession(date7, date8, SleepStatus.GOOD);
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+        List<SleepingSession> list1 = List.of(sleep1, sleep2, sleep4);
+        assertEquals((long) 0, sleeplessNights.analyze(list).getResult());
+        assertEquals((long) 1, sleeplessNights.analyze(list1).getResult());
     }
 }
