@@ -1,6 +1,6 @@
 package ru.yandex.practicum.sleeptracker;
 
-import Function.*;
+import function.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
