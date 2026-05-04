@@ -1,4 +1,4 @@
-package ru.yandex.practicum.sleeptracker;
+package Function;
 
 public class SleepAnalysisResult {
     String description;

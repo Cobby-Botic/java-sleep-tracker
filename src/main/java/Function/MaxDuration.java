@@ -1,17 +1,18 @@
-package ru.yandex.practicum.sleeptracker;
+package Function;
+
+import ru.yandex.practicum.sleeptracker.SleepingSession;
 
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
-public class MinDuration implements SleepAnalizator {
+public class MaxDuration implements SleepAnalizator {
 
     @Override
     public SleepAnalysisResult analyze(List<SleepingSession> sleepingSessions) {
 
         Duration maxDuration = sleepingSessions.stream()
-                .min(Comparator.comparing(SleepingSession::getPeriod))
+                .max(Comparator.comparing(SleepingSession::getPeriod))
                 .map(SleepingSession::getPeriod)
                 .orElse(Duration.ZERO);
 
