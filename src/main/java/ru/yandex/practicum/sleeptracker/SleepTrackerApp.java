@@ -16,7 +16,7 @@ public class SleepTrackerApp {
         List<SleepingSession> sleepingSessions;
 
         System.out.println("Введите путь до файла Log.txt:");
-        String pathFile = "src/main/resources/sleep_log.txt";
+        String pathFile = scanner.nextLine(); //src/main/resources/sleep_log.txt
         try {
             sleepingSessions = logsLoader.downloadSession(pathFile);
             List<SleepAnalizator> analyzers = Arrays.asList(
@@ -25,7 +25,8 @@ public class SleepTrackerApp {
                     new MaxDuration(),
                     new AverageDuration(),
                     new CountBadStatusSessions(),
-                    new SleeplessNights()
+                    new SleeplessNights(),
+                    new DetermineChronotype()
             );
 
             analyzers.forEach((analyzer) -> System.out.println(analyzer.analyze(sleepingSessions)));
