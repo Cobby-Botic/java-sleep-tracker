@@ -141,4 +141,85 @@ public class SleepTrackerAppTest {
         assertEquals((long) 0, sleeplessNights.analyze(list).getResult());
         assertEquals((long) 1, sleeplessNights.analyze(list1).getResult());
     }
+
+    @Test
+    public void shouldReturnOwlType() {
+        DetermineChronotype determineChronotype = new DetermineChronotype();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 23:01", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 09:01", formatDate);
+
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 23:01", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 09:01", formatDate);
+
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 23:05", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 09:05", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+
+        assertEquals(Chronotype.OWL, determineChronotype.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldReturnLarkType() {
+        DetermineChronotype determineChronotype = new DetermineChronotype();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 21:59", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:59", formatDate);
+
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 21:40", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 06:59", formatDate);
+
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 21:59", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 06:59", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+
+        assertEquals(Chronotype.LARK, determineChronotype.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldReturnPigeonType() {
+        DetermineChronotype determineChronotype = new DetermineChronotype();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 21:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 07:00", formatDate);
+
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 21:00", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 07:00", formatDate);
+
+        LocalDateTime date5 = LocalDateTime.parse("03.02.26 21:00", formatDate);
+        LocalDateTime date6 = LocalDateTime.parse("04.02.26 07:00", formatDate);
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
+
+        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+
+        assertEquals(Chronotype.PIGEON, determineChronotype.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldReturnPigeonWhen1OwlAnd1Lark() {
+        DetermineChronotype determineChronotype = new DetermineChronotype();
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 21:01", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:59", formatDate);
+
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 22:01", formatDate);
+        LocalDateTime date4 = LocalDateTime.parse("03.02.26 09:01", formatDate);
+
+        SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
+        SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
+
+        List<SleepingSession> list = List.of(sleep1, sleep2);
+
+        assertEquals(Chronotype.PIGEON, determineChronotype.analyze(list).getResult());
+    }
 }
