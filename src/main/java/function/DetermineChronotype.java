@@ -48,7 +48,7 @@ public class DetermineChronotype implements SleepAnalizator {
         return new SleepAnalysisResult("Ваш хронотип", result);
     }
 
-    public Chronotype determineChronotype (SleepingSession session) {
+    public Chronotype determineChronotype(SleepingSession session) {
         LocalTime timeOwlSleep = LocalTime.of(23, 0);
         LocalTime timeOwlAwake = LocalTime.of(9, 0);
 
