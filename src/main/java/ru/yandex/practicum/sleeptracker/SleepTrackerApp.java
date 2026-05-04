@@ -1,5 +1,7 @@
 package ru.yandex.practicum.sleeptracker;
 
+import Function.*;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +24,8 @@ public class SleepTrackerApp {
                     new MinDuration(),
                     new MaxDuration(),
                     new AverageDuration(),
-                    new CountBadStatusSessions()
+                    new CountBadStatusSessions(),
+                    new SleeplessNights()
             );
 
             analyzers.forEach((analyzer) -> System.out.println(analyzer.analyze(sleepingSessions)));
