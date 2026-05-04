@@ -4,7 +4,6 @@ import ru.yandex.practicum.sleeptracker.SleepingSession;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
@@ -18,7 +17,6 @@ public class SleeplessNights implements SleepAnalizator {
 
         long sleeplessNights = Stream.iterate(dayStart, date -> date.plusDays(1))
                 .limit(nights)
-                //.peek(day -> System.out.println("DAY: " + day))
                 .filter(day -> {
                     LocalDateTime nightStart = day.plusDays(1).atStartOfDay();
                     LocalDateTime nightEnd = day.plusDays(1).atTime(6, 0);
