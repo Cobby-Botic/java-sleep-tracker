@@ -1,5 +1,6 @@
-package function;
+package ru.yandex.practicum.sleeptracker.function;
 
+import ru.yandex.practicum.sleeptracker.SleepAnalizator;
 import ru.yandex.practicum.sleeptracker.SleepStatus;
 import ru.yandex.practicum.sleeptracker.SleepingSession;
 
