@@ -1,6 +1,6 @@
-package ru.yandex.practicum.sleeptracker;
-
 import function.*;
+import ru.yandex.practicum.sleeptracker.LogsLoader;
+import ru.yandex.practicum.sleeptracker.SleepingSession;
 
 import java.io.IOException;
 import java.util.Arrays;
