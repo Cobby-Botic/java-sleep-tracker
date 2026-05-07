@@ -6,10 +6,10 @@ import ru.yandex.practicum.sleeptracker.SleepingSession;
 import java.util.List;
 
 public class CountSessionSleeps implements SleepAnalizator {
+    private final String description = "Кол-во загруженных сессий сна";
 
     @Override
     public SleepAnalysisResult analyze(List<SleepingSession> sleepingSessions) {
-        return new SleepAnalysisResult("Кол-во загруженных сессий сна",
-                sleepingSessions.size());
+        return new SleepAnalysisResult(description, sleepingSessions.size());
     }
 }

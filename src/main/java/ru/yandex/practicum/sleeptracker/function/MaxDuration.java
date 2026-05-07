@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MaxDuration implements SleepAnalizator {
+    private final String description = "Максимальная продолжительность сессии";
 
     @Override
     public SleepAnalysisResult analyze(List<SleepingSession> sleepingSessions) {
@@ -19,6 +20,6 @@ public class MaxDuration implements SleepAnalizator {
 
         String result = maxDuration.toHours() + "ч " + maxDuration.toMinutesPart() + "м";
 
-        return new SleepAnalysisResult("Максимальная продолжительность сессии", result);
+        return new SleepAnalysisResult(description, result);
     }
 }

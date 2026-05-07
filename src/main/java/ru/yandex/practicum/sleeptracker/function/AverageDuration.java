@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class AverageDuration implements SleepAnalizator {
+    private final String description = "Средняя продолжительность сессии";
 
     @Override
     public SleepAnalysisResult analyze(List<SleepingSession> sleepingSessions) {
@@ -21,6 +22,6 @@ public class AverageDuration implements SleepAnalizator {
         String result = averageDuration.toHours() + "ч " +
                 averageDuration.toMinutesPart() + "м";
 
-        return new SleepAnalysisResult("Средняя продолжительность сессии", result);
+        return new SleepAnalysisResult(description, result);
     }
 }

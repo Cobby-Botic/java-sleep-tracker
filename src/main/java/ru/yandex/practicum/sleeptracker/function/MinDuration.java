@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MinDuration implements SleepAnalizator {
+    private final String description = "Минимальная продолжительность сессии";
 
     @Override
     public SleepAnalysisResult analyze(List<SleepingSession> sleepingSessions) {
@@ -19,6 +20,6 @@ public class MinDuration implements SleepAnalizator {
 
         String result = maxDuration.toHours() + "ч " + maxDuration.toMinutesPart() + "м";
 
-        return new SleepAnalysisResult("Минимальная продолжительность сессии", result);
+        return new SleepAnalysisResult(description, result);
     }
 }
