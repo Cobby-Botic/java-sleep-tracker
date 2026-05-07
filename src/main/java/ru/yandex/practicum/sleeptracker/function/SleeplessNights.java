@@ -10,8 +10,15 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class SleeplessNights implements SleepAnalizator {
+    private final String description = "Количество бессонных ночей";
+
     @Override
     public SleepAnalysisResult analyze(List<SleepingSession> sleepingSessions) {
+
+        if (sleepingSessions.isEmpty()) {
+            return new SleepAnalysisResult(description, 0);
+        }
+
         LocalDate dayStart = sleepingSessions.get(0).getStartSession().toLocalDate();
         LocalDate dayEnd = sleepingSessions.get(sleepingSessions.size() - 1).getEndSession().toLocalDate();
         long nights = ChronoUnit.DAYS.between(dayStart, dayEnd);
@@ -29,6 +36,6 @@ public class SleeplessNights implements SleepAnalizator {
                             );
                 })
                 .count();
-        return new SleepAnalysisResult("Количество бессонных ночей", sleeplessNights);
+        return new SleepAnalysisResult(description, sleeplessNights);
     }
 }
