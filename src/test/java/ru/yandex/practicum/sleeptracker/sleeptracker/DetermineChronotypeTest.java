@@ -17,10 +17,10 @@ public class DetermineChronotypeTest {
     DetermineChronotype determineChronotype = new DetermineChronotype();
 
     @Test
-    public void shouldReturn0WhenListIsEmpty() {
+    public void shouldReturnPigeonWhenListIsEmpty() {
         List<SleepingSession> list = List.of();
 
-        assertEquals(0, determineChronotype.analyze(list).getResult());
+        assertEquals(Chronotype.PIGEON, determineChronotype.analyze(list).getResult());
     }
 
     @Test
