@@ -8,10 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,38 +23,60 @@ public class DetermineChronotype implements SleepAnalizator {
             return new SleepAnalysisResult(description, Chronotype.PIGEON);
         }
 
-        LocalDate dayStart = sleepingSessions.get(0).getStartSession().toLocalDate();
-        LocalDate dayEnd = sleepingSessions.get(sleepingSessions.size() - 1).getEndSession().toLocalDate();
-        long nights = ChronoUnit.DAYS.between(dayStart, dayEnd) + 1; //тут оставил +1 потому что between не
-        // учитывает крайний день
+        LocalDateTime firstStart = sleepingSessions.get(0).getStartSession();
+        LocalDateTime lastEnd = sleepingSessions.get(sleepingSessions.size() - 1).getEndSession();
 
-        Map<Chronotype, Long> chronoType = Stream.iterate(dayStart, date -> date.plusDays(1))
+        // если первая сессия началась после 06:00 → пропускаем первую ночь
+        LocalDate startDate = firstStart.toLocalTime().isAfter(LocalTime.of(6, 0))
+                ? firstStart.toLocalDate().plusDays(1)
+                : firstStart.toLocalDate();
+
+        LocalDate endDate = lastEnd.toLocalDate();
+
+        long nights = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+
+        Map<Chronotype, Long> stats = Stream.iterate(startDate, date -> date.plusDays(1))
                 .limit(nights)
+
                 .map(day -> {
                     LocalDateTime nightStart = day.atStartOfDay();
                     LocalDateTime nightEnd = day.atTime(6, 0);
 
-                    return sleepingSessions.stream()
+                    List<SleepingSession> sessions = sleepingSessions.stream()
                             .filter(session ->
                                     session.getStartSession().isBefore(nightEnd)
                                             && session.getEndSession().isAfter(nightStart)
                             )
-                            .findFirst();
+                            .toList();
+
+                    if (sessions.isEmpty()) {
+                        return null;
+                    }
+
+                    LocalTime start = sessions.stream()
+                            .map(s -> s.getStartSession().toLocalTime())
+                            .min(LocalTime::compareTo)
+                            .get();
+
+                    LocalTime end = sessions.stream()
+                            .map(s -> s.getEndSession().toLocalTime())
+                            .max(LocalTime::compareTo)
+                            .get();
+
+                    return determineChronotype(start, end);
                 })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(this::determineChronotype)
+
+                .filter(Objects::nonNull)
+
                 .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
 
         Optional<Map.Entry<Chronotype, Long>> maxEntry =
-                chronoType.entrySet().stream()
-                        .max(Comparator.comparing(Map.Entry::getValue));
+                stats.entrySet().stream()
+                        .max(Map.Entry.comparingByValue());
 
-        long maxValue = maxEntry
-                .map(Map.Entry::getValue)
-                .orElse(0L);
+        long maxValue = maxEntry.map(Map.Entry::getValue).orElse(0L);
 
-        long countMax = chronoType.values().stream()
+        long countMax = stats.values().stream()
                 .filter(v -> v == maxValue)
                 .count();
 
@@ -72,9 +91,7 @@ public class DetermineChronotype implements SleepAnalizator {
         return new SleepAnalysisResult(description, result);
     }
 
-    public Chronotype determineChronotype(SleepingSession session) {
-        LocalTime start = session.getStartSession().toLocalTime();
-        LocalTime end = session.getEndSession().toLocalTime();
+    public Chronotype determineChronotype(LocalTime start, LocalTime end) {
 
         LocalTime owlSleep = LocalTime.of(23, 0);
         LocalTime owlAwake = LocalTime.of(9, 0);
@@ -82,14 +99,11 @@ public class DetermineChronotype implements SleepAnalizator {
         LocalTime larkSleep = LocalTime.of(22, 0);
         LocalTime larkAwake = LocalTime.of(7, 0);
 
-        boolean isNightStart = start.isBefore(LocalTime.of(6, 0));
+        boolean isOwl = !start.isBefore(owlSleep) && !end.isBefore(owlAwake);
+        boolean isLark = !start.isAfter(larkSleep) && !end.isAfter(larkAwake);
 
-        if ((start.isAfter(owlSleep) || isNightStart) && end.isAfter(owlAwake)) {
-            return Chronotype.OWL;
-        } else if (start.isBefore(larkSleep) && end.isBefore(larkAwake)) {
-            return Chronotype.LARK;
-        } else {
-            return Chronotype.PIGEON;
-        }
+        if (isOwl) return Chronotype.OWL;
+        if (isLark) return Chronotype.LARK;
+        return Chronotype.PIGEON;
     }
 }

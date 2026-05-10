@@ -31,7 +31,7 @@ public class SleeplessNightsTest {
     @Test
     public void shoulReturn0WhenListIsEmpty() {
         List<SleepingSession> list1 = List.of();
-        assertEquals(0, sleeplessNights.analyze(list1).getResult());
+        assertEquals(0L, sleeplessNights.analyze(list1).getResult());
     }
 
     @Test

@@ -20,26 +20,37 @@ public class DetermineChronotypeTest {
     public void shouldReturnPigeonWhenListIsEmpty() {
         List<SleepingSession> list = List.of();
 
-        assertEquals(Chronotype.PIGEON, determineChronotype.analyze(list).getResult());
+        SleepAnalysisResult result = determineChronotype.analyze(list);
+
+        assertEquals(Chronotype.PIGEON, result.getResult());
     }
 
     @Test
-    public void shouldReturnLarkType() {
-        LocalDateTime date1 = LocalDateTime.parse("01.02.26 21:59", formatDate);
-        LocalDateTime date2 = LocalDateTime.parse("02.02.26 06:59", formatDate);
+    public void shouldReturnLarkOnBoundaryValues() {
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 22:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("02.02.26 07:00", formatDate);
 
-        LocalDateTime date3 = LocalDateTime.parse("02.02.26 21:40", formatDate);
+        LocalDateTime date3 = LocalDateTime.parse("02.02.26 21:59", formatDate);
         LocalDateTime date4 = LocalDateTime.parse("03.02.26 06:59", formatDate);
 
-        LocalDateTime date5 = LocalDateTime.parse("03.02.26 21:59", formatDate);
-        LocalDateTime date6 = LocalDateTime.parse("04.02.26 06:59", formatDate);
         SleepingSession sleep1 = new SleepingSession(date1, date2, SleepStatus.GOOD);
         SleepingSession sleep2 = new SleepingSession(date3, date4, SleepStatus.GOOD);
-        SleepingSession sleep3 = new SleepingSession(date5, date6, SleepStatus.GOOD);
 
-        List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
+        List<SleepingSession> list = List.of(sleep1, sleep2);
 
         assertEquals(Chronotype.LARK, determineChronotype.analyze(list).getResult());
+    }
+
+    @Test
+    public void shouldIgnoreDaySleep() {
+        LocalDateTime date1 = LocalDateTime.parse("01.02.26 12:00", formatDate);
+        LocalDateTime date2 = LocalDateTime.parse("01.02.26 14:00", formatDate);
+
+        SleepingSession sleep = new SleepingSession(date1, date2, SleepStatus.GOOD);
+
+        List<SleepingSession> list = List.of(sleep);
+
+        assertEquals(Chronotype.PIGEON, determineChronotype.analyze(list).getResult());
     }
 
     @Test
@@ -60,7 +71,7 @@ public class DetermineChronotypeTest {
 
         List<SleepingSession> list = List.of(sleep1, sleep2, sleep3);
 
-        assertEquals(Chronotype.PIGEON, determineChronotype.analyze(list).getResult());
+        assertEquals(Chronotype.LARK, determineChronotype.analyze(list).getResult());
     }
 
     @Test
